@@ -1,0 +1,22 @@
+name: build
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build -A x64 -DBUILD_TESTING=ON -DPATCHY_BUILD_HARDWARE_TESTS=ON
+      - run: cmake --build build --config ${{ matrix.configuration }} --parallel
+      - run: ctest --test-dir build -C ${{ matrix.configuration }} --output-on-failure
+  portable:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
+      - run: cmake --build build --parallel
+      - run: ctest --test-dir build --output-on-failure

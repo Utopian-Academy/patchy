@@ -1,0 +1,7 @@
+build*/
+.vs/
+CMakeUserPresets.json
+*.wav
+*.etl
+local-reports/
+patchy-report.txt
