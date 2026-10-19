@@ -1,4 +1,6 @@
 # Patchy
+[![Build and tests](https://github.com/Utopian-Academy/patchy/actions/workflows/build.yml/badge.svg)](https://github.com/Utopian-Academy/patchy/actions/workflows/build.yml)
+
 Open audio infrastructure for Windows, inspired by the breadth and simplicity of
 Apple's Core Audio. **Early engineering prototype**, not yet a system-wide virtual
 audio device or a complete first-milestone release.
@@ -17,6 +19,8 @@ Install Visual Studio 2022 or newer with Desktop development with C++, a Windows
 SDK and CMake 3.24+. No WDK or custom driver is needed.
 
 ```powershell
+git clone https://github.com/Utopian-Academy/patchy.git
+cd patchy
 cmake -S . -B build -A x64 -DBUILD_TESTING=ON
 cmake --build build --config Release --parallel
 ctest --test-dir build -C Release --output-on-failure
@@ -84,8 +88,9 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
-GitHub Actions defines a Windows build/test job and a Linux ASan/UBSan job.
-A workflow definition does not imply a hosted run has occurred.
+GitHub Actions builds and tests Windows x64 Release/Debug and runs the portable
+tests on Linux with ASan/UBSan. Recorded results and hardware-test boundaries are
+in [VALIDATION.md](VALIDATION.md).
 
 ## Project map
 - [Vision](VISION.md), [architecture](ARCHITECTURE.md), [Core Audio parity](COREAUDIO_PARITY.md)

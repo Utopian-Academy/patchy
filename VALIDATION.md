@@ -1,6 +1,6 @@
 # Validation record
 Initial evidence: 2026-10-18. Further input/mapping validation: 2026-10-19.
-Hosted CI results will be recorded separately after publication.
+Hosted CI results are recorded below, separately from physical hardware checks.
 
 ## Environment
 Windows x64, build 26200 reported by CMake; Visual Studio 18 2026 Community,
@@ -65,7 +65,7 @@ alignment it can take around six seconds to reject a route.
 - Physical 302USB, Bluetooth profiles, exhaustive multichannel interfaces and
   exclusive-mode contention.
 - IAudioClient3 fallback on a device that rejects low-latency initialization.
-- Hosted GitHub Actions, Linux sanitizer execution, kernel code, signing or HLK.
+- Kernel code, signing or HLK.
 - Virtual devices, aggregate devices and the broader roadmap.
 
 M1 remains in progress. The next major subsystem is a genuine signed virtual
@@ -105,3 +105,27 @@ local build artifacts remained local; no remote CI/publish had occurred at that 
 - Physical mono/multichannel input mapping, microphone analog fidelity, input
   unplug/reconnect and input-watchdog fault injection remain unqualified on hardware.
   No ASIO frontend, DAW integration or kernel driver is implemented.
+
+## GitHub publication and hosted CI: 2026-10-19
+
+Published the MIT-licensed source to [Utopian-Academy/patchy](https://github.com/Utopian-Academy/patchy),
+with build artifacts, local inventories and audio excluded from Git.
+
+The [initial hosted run](https://github.com/Utopian-Academy/patchy/actions/runs/39317928973)
+passed Windows Debug/Release but failed GCC compilation of the test-registration
+table. Replacing function-type deduction with an explicit test-function pointer
+table fixed the portability issue. Explicit casts also removed GCC conversion
+warnings in the bounded DSP calculations. No tests were removed or disabled.
+
+Commit `1fa92ea` passed the [complete hosted workflow](https://github.com/Utopian-Academy/patchy/actions/runs/39318100045):
+
+| Environment | Result |
+|---|---|
+| Windows Server 2022 runner, x64 Debug | Build succeeded; 5/5 CTest entries passed |
+| Windows Server 2022 runner, x64 Release | Build succeeded; 5/5 CTest entries passed |
+| Ubuntu 24.04, GCC 13.3, Debug + AddressSanitizer/UndefinedBehaviorSanitizer | Build succeeded; 3/3 portable CTest entries passed |
+
+The Windows jobs also compile the opt-in signal probe; they do not run live audio
+tests. CI has no physical-interface qualification. The final local rebuild of this
+code passed Release 5/5 (0.82 s) and Debug 5/5 (1.18 s). Existing physical evidence
+and outstanding acceptance cases remain as recorded above.
