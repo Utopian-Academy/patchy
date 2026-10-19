@@ -65,8 +65,8 @@ Bridge::Bridge(std::uint32_t input_rate, std::uint32_t output_rate, std::uint16_
             const double x = static_cast<double>(t) - static_cast<double>(half) + 1 - frac;
             const double arg = 2 * std::numbers::pi * cutoff * x;
             const double sinc = std::abs(arg) < 1e-12 ? 1.0 : std::sin(arg) / arg;
-            const double window = 0.42 - 0.5 * std::cos(2 * std::numbers::pi * t / (taps - 1))
-                                      + 0.08 * std::cos(4 * std::numbers::pi * t / (taps - 1));
+            const double window = 0.42 - 0.5 * std::cos(2 * std::numbers::pi * static_cast<double>(t) / (taps - 1))
+                                      + 0.08 * std::cos(4 * std::numbers::pi * static_cast<double>(t) / (taps - 1));
             const double value = 2 * cutoff * sinc * window;
             coefficients_[p * taps + t] = static_cast<float>(value);
             sum += value;
@@ -103,7 +103,7 @@ void Bridge::pull(float* output, std::size_t frames) noexcept {
         primed_ = true;
     }
     // Occupancy is sampled just before rendering, so target includes one render quantum.
-    const double error = (static_cast<double>(ring_.size()) - target_ - half -
+    const double error = (static_cast<double>(ring_.size()) - static_cast<double>(target_) - half -
                           static_cast<double>(frames) * nominal_ * 0.5) / in_rate_;
     const double step = nominal_ * (1 + drift_.update(error, static_cast<double>(frames) / out_rate_));
     std::size_t produced = 0;

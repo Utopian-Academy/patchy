@@ -149,12 +149,14 @@ void resampling() {
 }
 int main() {
     unsigned passed = 0;
-    for (const auto& test : {std::pair{"formats and feedback", formats}, std::pair{"PCM and silence", pcm},
-                             std::pair{"ring wrap and overflow", ring}, std::pair{"clock drift", drift},
-                             std::pair{"SRC and recovery", resampling}, std::pair{"clock timestamps", clocks}}) {
-        try { test.second(); ++passed; std::cout << "PASS " << test.first << '\n'; }
+    struct Test { const char* name; void (*run)(); };
+    const Test tests[]{{"formats and feedback", formats}, {"PCM and silence", pcm},
+                       {"ring wrap and overflow", ring}, {"clock drift", drift},
+                       {"SRC and recovery", resampling}, {"clock timestamps", clocks}};
+    for (const auto& test : tests) {
+        try { test.run(); ++passed; std::cout << "PASS " << test.name << '\n'; }
         catch (const std::exception& error) {
-            std::cerr << "FAIL " << test.first << ": " << error.what() << '\n'; return 1;
+            std::cerr << "FAIL " << test.name << ": " << error.what() << '\n'; return 1;
         }
     }
     std::cout << passed << " processing test groups passed\n";
